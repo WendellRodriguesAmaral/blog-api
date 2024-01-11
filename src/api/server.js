@@ -6,6 +6,7 @@ const server = fastify();
 const database = new DataBaseController();
 
 server.get("/", (req, res) => {
+  res = setAccessControl(res);
   return res.status(200).send("Blog API available.");
 });
 
