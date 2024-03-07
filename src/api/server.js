@@ -1,6 +1,7 @@
 import { fastify } from "fastify";
 import cors from '@fastify/cors'
-import { DataBaseController } from "./controllers/PostsController.js";
+import { PostsController } from "./controllers/PostsController.js";
+import { UsersController } from "./controllers/UsersController.js";
 
 const server = fastify();
 
@@ -10,7 +11,8 @@ server.register(cors, {
   allowedHeaders: "*"
 });
 
-const database = new DataBaseController();
+const postsDatabase = new PostsController();
+const usersDatabase = new UsersController();
 
 server.get("/", (req, res) => {
   return res.status(200).send("Blog API available.");
@@ -19,32 +21,31 @@ server.get("/", (req, res) => {
 //all posts
 server.get("/posts", async (req, res) => {
   const search = req.query.search;
-  const videos = search ? await database.listBySearch(search) : await database.list();
+  const videos = search ? await postsDatabase.listBySearch(search) : await postsDatabase.list(); //da pra melhorar e colocar uma ordenação por data na query
   return videos.reverse(); //retorna o ultimo inserido, na primeira posição.
 });
 
 //filter by id
 server.get("/posts/:id", async (req, res) => {
   const postId = req.params.id;
-  const post = await database.getById(postId);
+  const post = await postsDatabase.getById(postId);
   return post;
 });
 
 //create a new post
 server.post("/posts", async (req, res) => {
   const post = req.body;
-  await database.create(post);
+  await postsDatabase.create(post);
 
-  return res.status(201).send(await database.list());
+  return res.status(201).send(await postsDatabase.list());
 });
-
 
 //update a post
 server.put("/posts/:id", async (req, res) => {
   const postId = req.params.id;
   const post = req.body;
 
-  await database.update(postId, post);
+  await postsDatabase.update(postId, post);
 
   return res.status(204).send();
 });
@@ -53,7 +54,7 @@ server.put("/posts/:id", async (req, res) => {
 //delete a post
 server.delete("/posts/:id", async (req, res) => {
   const postId = req.params.id;
-  await database.delete(postId);
+  await postsDatabase.delete(postId);
 
   return res.status(204).send();
 });
@@ -61,10 +62,34 @@ server.delete("/posts/:id", async (req, res) => {
 //filter by category
 server.get("/posts/category/:category", async (req, res) => {
   const category = req.params.category;
-  const postByCategory = await database.listByCategory(category);
+  const postByCategory = await postsDatabase.listByCategory(category);
 
   return postByCategory;
 });
+
+
+
+
+server.post("/user/create", async (req, res) => { 
+  const user = req.body;
+  await usersDatabase.create(user);
+  return res.status(201).send();
+} );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 server.listen({

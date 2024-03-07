@@ -1,7 +1,7 @@
 import { sql } from "../db-connect.js";
 import { randomUUID } from "crypto";
 
-export class DataBaseController {
+export class PostsController {
 
   async list() {
     const posts = await sql`SELECT * FROM posts`;
@@ -12,7 +12,7 @@ export class DataBaseController {
     const postId = randomUUID();
     const { title, image, text, author, date, category, privacy } = post;
     await sql`insert into posts (id, title, image, text, author, date, category, privacy) 
-        values (${postId}, ${title}, ${image}, ${text}, ${author}, ${date}, ${category || 'uncategorized'}, ${privacy || 'public'})`;
+        values (${postId}, ${title}, ${image}, ${text}, ${author}, ${date}, ${category || 'Outros'}, ${privacy || 'publico'})`;
   }
 
   async getById(postId) {
@@ -28,8 +28,8 @@ export class DataBaseController {
         text = ${text}, 
         author = ${author},
         date = ${date}, 
-        category = ${category || 'uncategorized'}, 
-        privacy = ${privacy || 'public'} where id = ${postId}`;
+        category = ${category || 'Outros'}, 
+        privacy = ${privacy || 'publico'} where id = ${postId}`;
   }
 
 
@@ -43,7 +43,7 @@ export class DataBaseController {
   }
 
   async listBySearch(search){
-    const postBySearch = await sql`select * from posts where title ILIKE ${'%' + search + '%'}`;
+    const postBySearch = await sql`select * from posts where title ILIKE ${'%' + search + '%'}`; //colocar um order by por ordenar por data
     return postBySearch;
   }
 }
