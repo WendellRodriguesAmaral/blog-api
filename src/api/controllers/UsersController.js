@@ -63,5 +63,9 @@ export class UsersController {
     await sql`delete from users where id = ${userId}`;
   }
 
+  async getUsers(usersId){
+    await sql `select * from users where id in (${usersId})`;
+  }
+
 }
 

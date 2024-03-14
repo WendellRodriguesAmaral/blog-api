@@ -21,8 +21,19 @@ server.get("/", (req, res) => {
 //all posts
 server.get("/posts", async (req, res) => {
   const search = req.query.search;
-  const videos = search ? await postsDatabase.listBySearch(search) : await postsDatabase.list(); //da pra melhorar e colocar uma ordenação por data na query
-  return videos.reverse(); //retorna o ultimo inserido, na primeira posição.
+
+  //query que busque pela lista de amigos antes e dps passe para a query abaixo para filtrar os posts
+
+
+  //na query abaixo ainda falta filtrar pelos ids do user e dos seus amigos
+  const posts = search ? await postsDatabase.listBySearch(search) : await postsDatabase.list(); //da pra melhorar e colocar uma ordenação por data na query
+
+  //esse trecho serve somente para que cada montar cada post com as info do seu autor
+  const usersId = posts.map((post) => post.author);
+  console.log(usersId);
+  //--
+
+  return posts.reverse(); //retorna o ultimo inserido, na primeira posição.
 });
 
 //filter by id

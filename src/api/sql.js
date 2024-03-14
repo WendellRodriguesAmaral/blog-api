@@ -48,3 +48,9 @@ import {sql} from './db-connect.js'
 // })
 
 
+
+// sql`
+// DELETE FROM posts WHERE author = '1690447a-73c0-4399-a645-cd5a8aac864f';
+// `.then(() => {
+//     console.log("post deletado com sucesso");
+// })
